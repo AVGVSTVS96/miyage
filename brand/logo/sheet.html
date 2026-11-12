@@ -16,5 +16,5 @@
   const tile = (n, small) => `<div><img class="big" src="${n}.svg"><div class="row"><span>${n === "rise" ? "A" : "B"}</span><div>` +
     [[n, 64], [small, 32], [small, 16]].map(([m, s]) => `<img src="${m}.svg" width="${s}" height="${s}">`).join("") +
     `<img class="light" src="${n}-mark-dark-ink.svg" width="64" height="64"></div></div></div>`
-  document.querySelector(".grid").innerHTML = tile("rise", "small") + tile("escape", "escape")
+  document.querySelector(".grid").innerHTML = tile("rise", "small") + tile("escape", "escape-small")
 </script>

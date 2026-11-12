@@ -27,7 +27,7 @@ const pen = () => {
   return api
 }
 // each hump: straight up, round over the top, diagonal down, a tight turn back up. A small lead-in hump, two full ones, then the exit and its wave.
-const cursive = ({ humps = [[112, 25, 58], [192, 31, 114], [214, 31, 62]], lean = 148, rho = 9, exit = 112, wave = [44, 104, 84, 48, 4] } = {}) => {
+const cursive = ({ humps = [[112, 25, 58], [192, 31, 114], [214, 31, 62]], lean = 148, rho = 9, exit = 112, wave = [48, 98, 120, 34, 0] } = {}) => {
   const p = pen()
   for (const [up, R, down] of humps) p.fd(up).arc(R, lean).fd(down).arc(rho, -lean)
   p.fd(exit).mark("exit")
@@ -48,21 +48,22 @@ const rise = ({ w = 30, top = 76, width = 0.6, standalone = false, p = cursive()
   return (ink) => line(d(p, k, ox, oy), w, ink)
 }
 // escape: a solid square. The line is cut out of it, then carries on in the square's color once it is through the top.
-const escape = ({ w = 22, F0 = 140, F1 = 404, p = cursive() } = {}) => {
+const escape = ({ w = 22, F0 = 140, F1 = 404, p = cursive({ exit: 156 }), shift = [-28, 12] } = {}) => {
   const side = F1 - F0
   const k = (side + w * 1.4) / -p.pts[p.marks.exit - 1][1]
   const b = bounds(p.pts.slice(0, p.marks.exit))
   const dd = d(p, k, (F0 + F1) / 2 - ((b.x1 + b.x2) / 2) * k, F1 + w)
   const defs = `<mask id="cut"><rect x="${F0}" y="${F0}" width="${side}" height="${side}" fill="#fff"/>${line(dd, w, "#000")}</mask><clipPath id="above"><rect x="0" y="0" width="${S}" height="${F0}"/></clipPath>`
-  return { defs, body: (ink) => `<rect x="${F0}" y="${F0}" width="${side}" height="${side}" fill="${ink}" mask="url(#cut)"/>` + line(dd, w, ink, ' clip-path="url(#above)"') }
+  return { defs, body: (ink) => `<g transform="translate(${shift[0]} ${shift[1]})"><rect x="${F0}" y="${F0}" width="${side}" height="${side}" fill="${ink}" mask="url(#cut)"/>` + line(dd, w, ink, ' clip-path="url(#above)"') + "</g>" }
 }
 
-const r = rise(), rs = rise({ standalone: true, top: 150, width: 0.66 }), e = escape()
+const r = rise({ top: 62 }), rs = rise({ standalone: true, top: 150, width: 0.66 }), e = escape()
 const small = rise({ w: 46, top: 96, width: 0.62, p: cursive({ humps: [[170, 38, 104], [226, 38, 70]], rho: 12, exit: 96, wave: null }) })
+const es = escape({ w: 40, F0: 120, F1: 416, shift: [-22, 22], p: cursive({ humps: [[170, 40, 104], [226, 40, 70]], rho: 12, exit: 190, wave: [56, 98, 120, 30, 0] }) })
 const files = {
   "rise": svg(r(IVORY)), "rise-mark": svg(rs(IVORY), "", null), "rise-mark-dark-ink": svg(rs(BLACK), "", null),
   "escape": svg(e.body(IVORY), e.defs), "escape-mark": svg(e.body(IVORY), e.defs, null), "escape-mark-dark-ink": svg(e.body(BLACK), e.defs, null),
-  "small": svg(small(IVORY)),
+  "small": svg(small(IVORY)), "escape-small": svg(es.body(IVORY), es.defs),
 }
 for (const [n, s] of Object.entries(files)) writeFileSync(`${out}/${n}.svg`, s)
 console.log("ok")
