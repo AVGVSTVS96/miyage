@@ -5,16 +5,13 @@
   * { box-sizing: border-box; margin: 0 }
   body { width: 1200px; background: #0b0b0b; padding: 48px; display: grid; grid-template-columns: 600px 1fr; gap: 40px; align-items: start }
   .hero { width: 600px; height: 600px; border-radius: 22.37%; display: block; outline: 1px solid #222; outline-offset: -1px }
-  .side { display: grid; gap: 24px }
-  .row { display: flex; justify-content: center; align-items: flex-end; gap: 18px; padding: 24px; border-radius: 24px; height: 176px }
+  .side { display: grid; gap: 24px; height: 600px; grid-template-rows: 1fr 1fr }
+  .row { display: flex; justify-content: center; align-items: center; gap: 14px; padding: 16px; border-radius: 24px }
   .dark { background: #171717 } .light { background: #ecebe8 }
   .row img { display: block; border-radius: 22.37% }
-  .ink { height: 176px; display: grid; place-items: center }
-  .ink img { border-radius: 0 }
 </style>
 <img class="hero" src="icon.svg" alt="" />
 <div class="side">
-  <div class="row dark"><img src="icon-mid.svg" width="128" /><img src="icon-small.svg" width="64" /><img src="icon-small.svg" width="32" /><img src="icon-small.svg" width="16" /></div>
-  <div class="row light"><img src="icon-mid.svg" width="128" /><img src="icon-small.svg" width="64" /><img src="icon-small.svg" width="32" /><img src="icon-small.svg" width="16" /></div>
-  <div class="row light ink"><img src="mark-mid-ink.svg" width="150" /></div>
+  <div class="row dark"><img src="icon-mid.svg" width="160" /><img src="icon-small.svg" width="87" /><img src="icon-small.svg" width="64" /><img src="icon-small.svg" width="32" /><img src="icon-small.svg" width="16" /></div>
+  <div class="row light"><img src="icon-mid.svg" width="160" /><img src="icon-small.svg" width="87" /><img src="icon-small.svg" width="64" /><img src="icon-small.svg" width="32" /><img src="icon-small.svg" width="16" /></div>
 </div>
