@@ -1,7 +1,7 @@
 import { writeFileSync, mkdirSync } from "node:fs"
 
 // One cord of strands, like the mizuhiki cord tied on a Japanese gift, drawn as an m.
-// It rises through the floor of the square, folds flat at the foot of the middle stem, and sweeps out through the right side.
+// It rises through the floor of the square, wraps under it, and sweeps out through the right side.
 const S = 512, BLACK = "#000000", IVORY = "#f2efe8"
 const f = (n) => +n.toFixed(2), rad = (d) => (d * Math.PI) / 180
 
@@ -36,20 +36,14 @@ export const strand = (segs, o) => {
   return d
 }
 
-// two pieces: up the first stem, over the first arch and down the middle stem; then, folded flat at
-// the baseline, back up the same stem, over the second arch and out. The second passes over the first.
-export const path = ({ x = 140, base = 340, xh = 180, D = 124, a = 62, foot = 40, sweep = 160 } = {}) => {
-  const top = base - xh
-  const under = pen(x, S + 80, -90).fd(S + 80 - top - a).arc(a, 90).fd(D - 2 * a).arc(a, 90).fd(xh - a)
-  const over = pen(x + D, base, -90).fd(xh - a).arc(a, 90).fd(D - 2 * a).arc(a, 90).fd(xh - a - foot).arc(foot, -90).arc(sweep, -90).fd(300)
-  return [under.segs, over.segs]
-}
-// n strands; the piece on top gets a black gap around it so the crossing reads
-export const cord = (pieces, { n = 5, gap = 8.5, w = 3, knock = 6 } = {}) => {
-  const band = (n - 1) * gap + w
-  const strands = (segs) => Array.from({ length: n }, (_, i) => `<path d="${strand(segs, (i - (n - 1) / 2) * gap)}" stroke-width="${w}"/>`).join("")
-  return pieces.map((segs, i) => (i ? `<path d="${strand(segs, 0)}" stroke="${BLACK}" stroke-width="${band + 2 * knock}"/>` : "") + strands(segs)).join("")
-}
+// the cord wraps the gift: up through the floor, over the first arch and back down through the floor,
+// then up the same stem, over the second arch and out the side. Where the arches meet, the strands interlace.
+export const path = ({ x = 140, top = 160, D = 124, a = 62, base = 340, foot = 40, sweep = 160 } = {}) => [
+  pen(x, S + 80, -90).fd(S + 80 - top - a).arc(a, 90).fd(D - 2 * a).arc(a, 90).fd(S + 80 - top - a).segs,
+  pen(x + D, S + 80, -90).fd(S + 80 - top - a).arc(a, 90).fd(D - 2 * a).arc(a, 90).fd(base - top - a - foot).arc(foot, -90).arc(sweep, -90).fd(300).segs,
+]
+export const cord = (pieces, { n = 5, gap = 8.5, w = 3 } = {}) =>
+  pieces.flatMap((segs) => Array.from({ length: n }, (_, i) => `<path d="${strand(segs, (i - (n - 1) / 2) * gap)}" stroke-width="${w}"/>`)).join("")
 export const svg = (body, { id, bg = BLACK, ink = IVORY, label = "Miyage" } = {}) =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${S} ${S}" role="img" aria-label="${label}">` +
   `<clipPath id="${id}"><rect width="${S}" height="${S}"/></clipPath>` +
