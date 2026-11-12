@@ -1,17 +1,18 @@
 <!doctype html>
 <meta charset="utf-8" />
-<title>miyage logo directions</title>
+<title>miyage lettermarks</title>
 <style>
   * { box-sizing: border-box; margin: 0 }
-  body { background: #000; width: 1200px; font: 400 22px/1 Inter, system-ui, sans-serif; color: #77736b }
-  .card { position: relative; border-bottom: 1px solid #222 }
-  .card > img { display: block; width: 1200px }
-  .tag { position: absolute; left: 36px; top: 32px; letter-spacing: .04em }
-  .icons { position: absolute; right: 36px; bottom: 32px; display: flex; align-items: flex-end; gap: 14px }
-  .icons img { display: block; border: 1px solid #2a2a2a; border-radius: 22% }
+  body { background: #0e0e0e; width: 1200px; padding: 40px; font: 500 26px/1 Inter, system-ui, sans-serif; color: #8a867e }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px 40px }
+  .big { display: block; width: 100%; border-radius: 22%; border: 1px solid #2c2c2c }
+  .row { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding: 0 6px }
+  .row div { display: flex; align-items: center; gap: 12px }
+  .row img { display: block; border-radius: 22%; border: 1px solid #2c2c2c }
 </style>
+<div class="grid"></div>
 <script>
-  for (const [l, n] of [["A", "a-didone"], ["B", "b-italic"], ["C", "c-arch"], ["D", "d-ring"]])
-    document.write(`<div class="card"><div class="tag">${l}</div><img src="${n}.svg"><div class="icons">` +
-      [72, 36, 18].map((s) => `<img src="${n}-icon.svg" width="${s}" height="${s}">`).join("") + `</div></div>`)
+  document.querySelector(".grid").innerHTML = ["1-italic", "2-serif", "3-capital", "4-hairline", "5-arches", "6-thin"].map((n) =>
+    `<div><img class="big" src="${n}.svg"><div class="row"><span>${n[0]}</span><div>` +
+    [60, 32, 16].map((s) => `<img src="${n}.svg" width="${s}" height="${s}">`).join("") + `</div></div></div>`).join("")
 </script>

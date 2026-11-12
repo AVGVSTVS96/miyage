@@ -1,0 +1,17 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>miyage logo directions</title>
+<style>
+  * { box-sizing: border-box; margin: 0 }
+  body { background: #000; width: 1200px; font: 400 22px/1 Inter, system-ui, sans-serif; color: #77736b }
+  .card { position: relative; border-bottom: 1px solid #222 }
+  .card > img { display: block; width: 1200px }
+  .tag { position: absolute; left: 36px; top: 32px; letter-spacing: .04em }
+  .icons { position: absolute; right: 36px; bottom: 32px; display: flex; align-items: flex-end; gap: 14px }
+  .icons img { display: block; border: 1px solid #2a2a2a; border-radius: 22% }
+</style>
+<script>
+  for (const [l, n] of [["A", "a-didone"], ["B", "b-italic"], ["C", "c-arch"], ["D", "d-ring"]])
+    document.write(`<div class="card"><div class="tag">${l}</div><img src="${n}.svg"><div class="icons">` +
+      [72, 36, 18].map((s) => `<img src="${n}-icon.svg" width="${s}" height="${s}">`).join("") + `</div></div>`)
+</script>
