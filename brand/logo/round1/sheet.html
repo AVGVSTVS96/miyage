@@ -1,0 +1,24 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>miyage logo directions</title>
+<style>
+  * { box-sizing: border-box; margin: 0 }
+  body { font: 500 15px/1.3 Inter, system-ui, sans-serif; background: #e9e9e6; padding: 20px; width: 1200px }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px }
+  .card { border-radius: 18px; padding: 22px 26px 24px; height: 270px; display: flex; flex-direction: column; position: relative }
+  .light { background: #fff; color: #111113 }
+  .dark { background: #0c0c0e; color: #f2f2f0 }
+  .tag { font-size: 20px; font-weight: 600; opacity: .55 }
+  .main { flex: 1; display: flex; align-items: center }
+  .main img { height: var(--h); display: block }
+  .sizes { display: flex; align-items: flex-end; gap: 14px }
+  .sizes img { display: block }
+</style>
+<script>
+  const dirs = [["A", "a-parcel", 96], ["B", "b-seal", 104], ["C", "c-furoshiki", 104]]
+  for (const [l, n, h] of dirs) {
+    document.write(`<div class="row">` + ["", "-dark"].map((t) =>
+      `<div class="card ${t ? "dark" : "light"}"><div class="tag">${l}</div><div class="main" style="--h:${h}px"><img src="${n}${t}.svg"></div><div class="sizes">` +
+      [64, 32, 16].map((s) => `<img src="${n}-icon${t}.svg" width="${s}" height="${s}">`).join("") + `</div></div>`).join("") + `</div>`)
+  }
+</script>
