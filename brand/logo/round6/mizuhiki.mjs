@@ -15,6 +15,7 @@ const pen = (x, y, hd) => {
       segs.push({ k: "A", cx, cy, r, a0: hd - 90 * s, deg, s })
       hd += deg; x = cx + Math.cos(rad(hd - 90 * s)) * r; y = cy + Math.sin(rad(hd - 90 * s)) * r; return api
     },
+    turn(deg) { hd += deg; return api },
     segs,
   }
   return api
@@ -35,10 +36,14 @@ const strand = (segs, o) => {
   return d
 }
 
-// stems stand at x, x+2R, x+2R+2r, x+4R+2r; the middle one is a hairpin, so the cord never crosses itself
+// stems stand at x, x+2R, x+2R+2r, x+4R+2r; the middle one is a hairpin, so the strands never cross
 export const path = ({ x = 146, base = 360, xh = 196, R = 42, r = 24, foot = 40, sweep = 160 } = {}) => {
   const p = pen(x, S + 80, -90)
-  p.fd(S + 80 - base + xh - R).arc(R, 180).fd(xh - R - r).arc(r, -180).fd(xh - R - r).arc(R, 180)
+  p.fd(S + 80 - base + xh - R).arc(R, 180)
+  // r = 0 is for one band at tiny sizes: down the middle stem and back up it, a plain m
+  if (r) p.fd(xh - R - r).arc(r, -180).fd(xh - R - r)
+  else p.fd(xh - R).turn(180).fd(xh - R)
+  p.arc(R, 180)
   p.fd(xh - R - foot).arc(foot, -90).arc(sweep, -90).fd(200)
   return p.segs
 }

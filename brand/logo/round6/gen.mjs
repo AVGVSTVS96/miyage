@@ -9,10 +9,12 @@ const out = import.meta.dirname
 const sizes = {
   // 180px and up
   icon: { geo: { x: 146, base: 330, r: 21 }, strands: { n: 5, gap: 8.5, w: 3 } },
-  // 88 to 179px: same stems, tail and box
-  "icon-mid": { geo: { x: 146, base: 330, R: 40.5, r: 24 }, strands: { n: 3, gap: 17, w: 8 } },
-  // 87px and down: two strands, rounder arches so the counters stay open
-  "icon-small": { geo: { x: 146, base: 330, R: 46, r: 30 }, strands: { n: 2, gap: 36, w: 22 } },
+  // 88 to 179px: same stems, baseline and tail
+  "icon-mid": { geo: { x: 146, base: 330, R: 39, r: 27 }, strands: { n: 3, gap: 17, w: 8 } },
+  // 40 to 87px: two strands, rounder arches so the counters stay open
+  "icon-small": { geo: { x: 146, base: 330, R: 46, r: 33 }, strands: { n: 2, gap: 34, w: 18 } },
+  // 39px and down: one band, a plain m
+  "icon-tiny": { geo: { x: 150, base: 344, xh: 210, R: 62, r: 0, foot: 46, sweep: 150 }, strands: { n: 1, gap: 0, w: 48 } },
 }
 const draw = ({ geo, strands }) => cord(path(geo), strands)
 
