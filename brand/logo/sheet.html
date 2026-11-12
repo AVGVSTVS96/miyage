@@ -1,0 +1,20 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>miyage marks</title>
+<style>
+  * { box-sizing: border-box; margin: 0 }
+  body { background: #101010; width: 1200px; padding: 36px; font: 600 26px/1 Inter, system-ui, sans-serif; color: #8a867e }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 36px }
+  .big { display: block; width: 100%; border-radius: 22.5% }
+  .row { display: flex; align-items: center; justify-content: space-between; margin-top: 18px }
+  .row div { display: flex; align-items: center; gap: 14px }
+  .row img { display: block; border-radius: 22.5% }
+  .light { background: #f3efe6; border-radius: 22.5%; padding: 0 }
+</style>
+<div class="grid"></div>
+<script>
+  const tile = (n, small) => `<div><img class="big" src="${n}.svg"><div class="row"><span>${n === "rise" ? "A" : "B"}</span><div>` +
+    [[n, 64], [small, 32], [small, 16]].map(([m, s]) => `<img src="${m}.svg" width="${s}" height="${s}">`).join("") +
+    `<img class="light" src="${n}-mark-dark-ink.svg" width="64" height="64"></div></div></div>`
+  document.querySelector(".grid").innerHTML = tile("rise", "small") + tile("escape", "escape")
+</script>
