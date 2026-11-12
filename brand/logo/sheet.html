@@ -1,6 +1,6 @@
 <!doctype html>
 <meta charset="utf-8" />
-<title>miyage lettermarks</title>
+<title>miyage marks</title>
 <style>
   * { box-sizing: border-box; margin: 0 }
   body { background: #0e0e0e; width: 1200px; padding: 40px; font: 500 26px/1 Inter, system-ui, sans-serif; color: #8a867e }
@@ -12,7 +12,7 @@
 </style>
 <div class="grid"></div>
 <script>
-  document.querySelector(".grid").innerHTML = ["1-italic", "2-serif", "3-capital", "4-hairline", "5-arches", "6-thin"].map((n) =>
+  document.querySelector(".grid").innerHTML = ["1-line", "2-points", "3-loops", "4-rising", "5-pen", "6-flip"].map((n) =>
     `<div><img class="big" src="${n}.svg"><div class="row"><span>${n[0]}</span><div>` +
     [60, 32, 16].map((s) => `<img src="${n}.svg" width="${s}" height="${s}">`).join("") + `</div></div></div>`).join("")
 </script>
