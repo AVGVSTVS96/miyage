@@ -35,7 +35,7 @@ const tied = (size) => cord(tiedPath(), STROKES[size])
 
 // 2. Endless: the same tied M, but the cord never ends: it runs down each outer side and closes under the knot,
 // so the mark is one closed loop, like a cord tied around a gift.
-const endlessPath = ({ Yb = 420, r = 50, T = 120, a = 40, rv = 28, V = 336, th = 69 } = {}) => {
+const endlessPath = ({ Yb = 400, r = 44, T = 100, a = 44, rv = 28, V = 316, th = 69 } = {}) => {
   const build = (L0, len) => {
     const p = pen(S / 2, Yb, 180).fd(L0).arc(r, 180 - th)
     const up = (p.pos[1] + a * Math.cos((th * Math.PI) / 180) - a - T) / Math.sin((th * Math.PI) / 180) // so the hump tops out at T
