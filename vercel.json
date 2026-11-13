@@ -4,9 +4,9 @@
   "installCommand": "bun install --frozen-lockfile --ignore-scripts",
   "redirects": [
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "www.miyage.dev" }],
-      "destination": "https://miyage.dev/:path*",
+      "destination": "https://miyage.dev/$1",
       "permanent": true
     }
   ]
