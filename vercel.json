@@ -1,5 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "astro",
-  "installCommand": "bun install --frozen-lockfile --ignore-scripts"
+  "installCommand": "bun install --frozen-lockfile --ignore-scripts",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.miyage.dev" }],
+      "destination": "https://miyage.dev/:path*",
+      "permanent": true
+    }
+  ]
 }
