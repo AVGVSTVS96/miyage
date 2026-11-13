@@ -13,18 +13,18 @@ import { Font } from "astro:assets";
     <meta name="theme-color" content="#ebeae6" media="(prefers-color-scheme: light)" />
     <meta property="og:title" content="Miyage, Inc." />
     <meta property="og:url" content="https://miyage.dev" />
+    <meta property="og:description" content="Miyage, Inc. San Francisco." />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <Font cssVariable="--font-sans" preload />
     <Font cssVariable="--font-jp" />
   </head>
   <body>
     <main>
-      <div class="brand">
-        <h1 class="mark" data-mark>
-          <span class="matte">miyage</span>
-          <span class="gloss" aria-hidden="true">miyage</span>
-        </h1>
-      </div>
+      <h1 class="mark" data-mark>
+        <span class="matte">miyage</span>
+        <span class="gloss" aria-hidden="true">miyage</span>
+      </h1>
     </main>
 
     <span class="kanji" lang="ja" aria-hidden="true">土産</span>
@@ -44,20 +44,21 @@ import { Font } from "astro:assets";
       const light = { ...target };
       let idle = true;
       let start = performance.now();
+      let rest = 0;
 
       const follow = (event: PointerEvent) => {
         idle = false;
         target = { x: event.clientX, y: event.clientY };
+        clearTimeout(rest);
+        rest = setTimeout(() => {
+          idle = true;
+          start = performance.now() - 2250;
+        }, 2500);
       };
 
       addEventListener("pointermove", follow, { passive: true });
 
       addEventListener("pointerdown", follow, { passive: true });
-
-      document.addEventListener("pointerleave", () => {
-        idle = true;
-        start = performance.now();
-      });
 
       const paint = () => {
         root.style.setProperty("--lx", `${light.x}px`);
@@ -97,8 +98,8 @@ import { Font } from "astro:assets";
         color-scheme: light dark;
         --bg: #0a0a0b;
         --ink: #8a8a90;
-        --faint: #4a4a50;
-        --matte: #19191c;
+        --faint: #6a6a70;
+        --matte: #2a2a2f;
         --gloss: #f4f4f6;
         --line: rgb(255 255 255 / 0.05);
         --glow: rgb(190 200 220 / 0.09);
@@ -114,12 +115,12 @@ import { Font } from "astro:assets";
         :root {
           --bg: #ebeae6;
           --ink: #6e6d68;
-          --faint: #a6a49e;
-          --matte: #dddcd7;
+          --faint: #8a8882;
+          --matte: #c4c2bb;
           --gloss: #ffffff;
           --line: rgb(0 0 0 / 0.045);
           --glow: rgb(255 255 255 / 0.55);
-          --sheen: rgb(0 0 0 / 0.1);
+          --sheen: rgb(255 255 255 / 0.85);
           --red: #b8392a;
         }
       }
@@ -164,13 +165,6 @@ import { Font } from "astro:assets";
         display: grid;
         place-items: center;
         padding: 2rem;
-      }
-
-      .brand {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1.5rem;
       }
 
       .mark {
