@@ -45,28 +45,13 @@ import { Font } from "astro:assets";
       let idle = true;
       let start = performance.now();
 
+      let timer = 0;
+      let running = false;
+
       const rest = () => {
         idle = true;
         start = performance.now() - 2250;
       };
-
-      let timer = 0;
-
-      const follow = (event: PointerEvent) => {
-        idle = false;
-        target = { x: event.clientX, y: event.clientY };
-        clearTimeout(timer);
-
-        if (event.pointerType !== "mouse") {
-          timer = setTimeout(rest, 2500);
-        }
-      };
-
-      addEventListener("pointermove", follow, { passive: true });
-
-      addEventListener("pointerdown", follow, { passive: true });
-
-      root.addEventListener("mouseleave", rest);
 
       const paint = () => {
         root.style.setProperty("--lx", `${light.x}px`);
@@ -92,14 +77,47 @@ import { Font } from "astro:assets";
         light.x += (target.x - light.x) * ease;
         light.y += (target.y - light.y) * ease;
         paint();
-        requestAnimationFrame(frame);
+        running = idle || Math.hypot(target.x - light.x, target.y - light.y) > 0.5;
+
+        if (running) {
+          requestAnimationFrame(frame);
+        }
       };
 
-      if (still) {
-        paint();
-      } else {
-        requestAnimationFrame(frame);
-      }
+      const wake = () => {
+        if (!still && !running) {
+          running = true;
+          requestAnimationFrame(frame);
+        }
+      };
+
+      const follow = (event: PointerEvent) => {
+        idle = false;
+        target = { x: event.clientX, y: event.clientY };
+        clearTimeout(timer);
+
+        if (event.pointerType !== "mouse") {
+          timer = setTimeout(() => {
+            rest();
+            wake();
+          }, 2500);
+        }
+
+        wake();
+      };
+
+      addEventListener("pointermove", follow, { passive: true });
+
+      addEventListener("pointerdown", follow, { passive: true });
+
+      root.addEventListener("mouseleave", () => {
+        rest();
+        wake();
+      });
+
+      paint();
+
+      wake();
     </script>
 
     <style is:global>
@@ -125,7 +143,7 @@ import { Font } from "astro:assets";
         :root {
           --bg: #ebeae6;
           --ink: #6e6d68;
-          --faint: #74726c;
+          --faint: #8a8882;
           --matte: #c4c2bb;
           --gloss: #3a3935;
           --gloss-mid: rgb(58 57 53 / 0.35);
