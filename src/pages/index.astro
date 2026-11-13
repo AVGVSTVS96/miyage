@@ -1,0 +1,274 @@
+---
+import { Font } from "astro:assets";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Miyage, Inc.</title>
+    <meta name="description" content="Miyage, Inc. San Francisco." />
+    <meta name="theme-color" content="#0a0a0b" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ebeae6" media="(prefers-color-scheme: light)" />
+    <meta property="og:title" content="Miyage, Inc." />
+    <meta property="og:url" content="https://miyage.dev" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <Font cssVariable="--font-sans" preload />
+    <Font cssVariable="--font-jp" />
+  </head>
+  <body>
+    <main>
+      <div class="brand">
+        <h1 class="mark" data-mark>
+          <span class="matte">miyage</span>
+          <span class="gloss" aria-hidden="true">miyage</span>
+        </h1>
+      </div>
+    </main>
+
+    <span class="kanji" lang="ja" aria-hidden="true">土産</span>
+
+    <footer>
+      <span>Miyage, Inc.</span>
+      <span class="place">San Francisco</span>
+      <a href="mailto:bassim@miyage.dev">bassim@miyage.dev</a>
+    </footer>
+
+    <script>
+      const root = document.documentElement;
+      const mark = document.querySelector<HTMLElement>("[data-mark]");
+      const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      let target = { x: innerWidth * 0.32, y: innerHeight * 0.38 };
+      const light = { ...target };
+      let idle = true;
+      let start = performance.now();
+
+      const follow = (event: PointerEvent) => {
+        idle = false;
+        target = { x: event.clientX, y: event.clientY };
+      };
+
+      addEventListener("pointermove", follow, { passive: true });
+
+      addEventListener("pointerdown", follow, { passive: true });
+
+      document.addEventListener("pointerleave", () => {
+        idle = true;
+        start = performance.now();
+      });
+
+      const paint = () => {
+        root.style.setProperty("--lx", `${light.x}px`);
+        root.style.setProperty("--ly", `${light.y}px`);
+
+        if (mark) {
+          const box = mark.getBoundingClientRect();
+          mark.style.setProperty("--mx", `${light.x - box.left}px`);
+          mark.style.setProperty("--my", `${light.y - box.top}px`);
+        }
+      };
+
+      const frame = (now: number) => {
+        if (idle) {
+          const t = (now - start) / 9000;
+          target = {
+            x: innerWidth * (0.5 + 0.34 * Math.sin(t * Math.PI * 2)),
+            y: innerHeight * (0.44 + 0.1 * Math.sin(t * Math.PI * 4)),
+          };
+        }
+
+        light.x += (target.x - light.x) * 0.08;
+        light.y += (target.y - light.y) * 0.08;
+        paint();
+        requestAnimationFrame(frame);
+      };
+
+      if (still) {
+        paint();
+      } else {
+        requestAnimationFrame(frame);
+      }
+    </script>
+
+    <style is:global>
+      :root {
+        color-scheme: light dark;
+        --bg: #0a0a0b;
+        --ink: #8a8a90;
+        --faint: #4a4a50;
+        --matte: #19191c;
+        --gloss: #f4f4f6;
+        --line: rgb(255 255 255 / 0.05);
+        --glow: rgb(190 200 220 / 0.09);
+        --sheen: rgb(255 255 255 / 0.14);
+        --red: #c8412e;
+        --lx: 32vw;
+        --ly: 38vh;
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #ebeae6;
+          --ink: #6e6d68;
+          --faint: #a6a49e;
+          --matte: #dddcd7;
+          --gloss: #ffffff;
+          --line: rgb(0 0 0 / 0.045);
+          --glow: rgb(255 255 255 / 0.55);
+          --sheen: rgb(0 0 0 / 0.1);
+          --red: #b8392a;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+        background: var(--bg);
+      }
+
+      body {
+        position: relative;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        min-height: 100dvh;
+        overflow: hidden;
+        color: var(--ink);
+        background:
+          radial-gradient(60vmax circle at var(--lx) var(--ly), var(--glow), transparent 60%),
+          var(--bg);
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(var(--line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--line) 1px, transparent 1px);
+        background-size: 56px 56px;
+        background-position: center;
+        mask-image: radial-gradient(34vmax circle at var(--lx) var(--ly), #000, transparent 75%);
+      }
+
+      main {
+        display: grid;
+        place-items: center;
+        padding: 2rem;
+      }
+
+      .brand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .mark {
+        position: relative;
+        font-size: clamp(4rem, 16vw, 9.5rem);
+        font-weight: 500;
+        letter-spacing: -0.045em;
+        line-height: 1;
+        user-select: none;
+      }
+
+      .matte {
+        color: var(--matte);
+        text-shadow:
+          0 1px 0 rgb(255 255 255 / 0.03),
+          0 -1px 0 rgb(0 0 0 / 0.4);
+      }
+
+      .gloss {
+        position: absolute;
+        inset: 0;
+        color: transparent;
+        background:
+          radial-gradient(
+            11rem circle at var(--mx, 30%) var(--my, 40%),
+            var(--gloss),
+            rgb(255 255 255 / 0.35) 30%,
+            transparent 70%
+          ),
+          linear-gradient(
+            115deg,
+            transparent 30%,
+            var(--sheen) 48%,
+            transparent 66%
+          );
+        background-clip: text;
+        -webkit-background-clip: text;
+        opacity: 0.8;
+      }
+
+      @media (prefers-color-scheme: light) {
+        .matte {
+          text-shadow:
+            0 1px 0 rgb(255 255 255 / 0.7),
+            0 -1px 0 rgb(0 0 0 / 0.05);
+        }
+
+        .gloss {
+          opacity: 0.9;
+        }
+      }
+
+      .kanji {
+        position: fixed;
+        top: max(1.75rem, env(safe-area-inset-top));
+        right: max(1.75rem, env(safe-area-inset-right));
+        writing-mode: vertical-rl;
+        font-family: var(--font-jp);
+        font-size: 0.8125rem;
+        letter-spacing: 0.4em;
+        color: var(--red);
+      }
+
+      footer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 0.5rem 1.5rem;
+        padding: 1.75rem max(1.75rem, env(safe-area-inset-right))
+          max(1.75rem, env(safe-area-inset-bottom)) max(1.75rem, env(safe-area-inset-left));
+        font-size: 0.8125rem;
+        letter-spacing: 0.01em;
+        white-space: nowrap;
+      }
+
+      .place {
+        color: var(--faint);
+        margin-right: auto;
+      }
+
+      footer a {
+        color: inherit;
+        text-decoration: none;
+        transition: color 160ms ease;
+      }
+
+      footer a:hover,
+      footer a:focus-visible {
+        color: var(--gloss);
+      }
+
+      @media (prefers-color-scheme: light) {
+        footer a:hover,
+        footer a:focus-visible {
+          color: #111;
+        }
+      }
+    </style>
+  </body>
+</html>
