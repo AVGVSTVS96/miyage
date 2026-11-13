@@ -4,7 +4,7 @@
 // Pieces are drawn in order; each lays a black bed under its strands first, so a later piece passes over an earlier one.
 export const S = 512
 const rad = (d) => (d * Math.PI) / 180
-const f = (n) => +n.toFixed(1)
+const f = (n) => +n.toFixed(2)
 
 export const pen = (x, y, hd) => {
   const pts = [[x, y]]
@@ -57,7 +57,13 @@ export const offset = (raw, o) => {
     const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1
     return [p[0] - (dy / l) * o, p[1] + (dx / l) * o]
   })
-  return "M" + out.map((p) => `${f(p[0])} ${f(p[1])}`).join("L")
+  // keep only points where the path bends, so straight runs are written as single exact lines
+  const keep = out.filter((p, i) => {
+    if (i === 0 || i === out.length - 1) return true
+    const a = out[i - 1], b = out[i + 1]
+    return Math.abs((p[0] - a[0]) * (b[1] - a[1]) - (p[1] - a[1]) * (b[0] - a[0])) > 1e-3
+  })
+  return "M" + keep.map((p) => `${f(p[0])} ${f(p[1])}`).join("L")
 }
 
 // the approved stroke at full size, and size-specific drawings for small sizes
