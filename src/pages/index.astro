@@ -44,21 +44,29 @@ import { Font } from "astro:assets";
       const light = { ...target };
       let idle = true;
       let start = performance.now();
-      let rest = 0;
+
+      const rest = () => {
+        idle = true;
+        start = performance.now() - 2250;
+      };
+
+      let timer = 0;
 
       const follow = (event: PointerEvent) => {
         idle = false;
         target = { x: event.clientX, y: event.clientY };
-        clearTimeout(rest);
-        rest = setTimeout(() => {
-          idle = true;
-          start = performance.now() - 2250;
-        }, 2500);
+        clearTimeout(timer);
+
+        if (event.pointerType !== "mouse") {
+          timer = setTimeout(rest, 2500);
+        }
       };
 
       addEventListener("pointermove", follow, { passive: true });
 
       addEventListener("pointerdown", follow, { passive: true });
+
+      root.addEventListener("mouseleave", rest);
 
       const paint = () => {
         root.style.setProperty("--lx", `${light.x}px`);
@@ -80,8 +88,9 @@ import { Font } from "astro:assets";
           };
         }
 
-        light.x += (target.x - light.x) * 0.08;
-        light.y += (target.y - light.y) * 0.08;
+        const ease = idle ? 0.02 : 0.08;
+        light.x += (target.x - light.x) * ease;
+        light.y += (target.y - light.y) * ease;
         paint();
         requestAnimationFrame(frame);
       };
@@ -101,6 +110,7 @@ import { Font } from "astro:assets";
         --faint: #6a6a70;
         --matte: #2a2a2f;
         --gloss: #f4f4f6;
+        --gloss-mid: rgb(255 255 255 / 0.35);
         --line: rgb(255 255 255 / 0.05);
         --glow: rgb(190 200 220 / 0.09);
         --sheen: rgb(255 255 255 / 0.14);
@@ -115,12 +125,13 @@ import { Font } from "astro:assets";
         :root {
           --bg: #ebeae6;
           --ink: #6e6d68;
-          --faint: #8a8882;
+          --faint: #74726c;
           --matte: #c4c2bb;
-          --gloss: #ffffff;
+          --gloss: #3a3935;
+          --gloss-mid: rgb(58 57 53 / 0.35);
           --line: rgb(0 0 0 / 0.045);
           --glow: rgb(255 255 255 / 0.55);
-          --sheen: rgb(255 255 255 / 0.85);
+          --sheen: transparent;
           --red: #b8392a;
         }
       }
@@ -191,7 +202,7 @@ import { Font } from "astro:assets";
           radial-gradient(
             11rem circle at var(--mx, 30%) var(--my, 40%),
             var(--gloss),
-            rgb(255 255 255 / 0.35) 30%,
+            var(--gloss-mid) 30%,
             transparent 70%
           ),
           linear-gradient(
