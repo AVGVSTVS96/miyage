@@ -4,3 +4,4 @@ shots
 dist
 .astro
 .vercel
+.env*
