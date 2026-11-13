@@ -77,7 +77,8 @@ export const cord = (pieces, { n, gap, w }, bed = true) => {
   const width = (n - 1) * gap + w
   return pieces
     .map((pts) => {
-      const p0 = offset(pts, 0)
+      // the bed stops short of the piece's ends, so where a piece retraces another its strands cover the bed's edge and leave no seam
+      const p0 = offset(pts.slice(16, -16), 0)
       const under = bed ? `<path d="${p0}" stroke="#000" stroke-width="${f(width + 14)}"/>` : ""
       const strands = Array.from({ length: n }, (_, i) => `<path d="${offset(pts, (i - (n - 1) / 2) * gap)}" stroke-width="${w}"/>`).join("")
       return under + strands

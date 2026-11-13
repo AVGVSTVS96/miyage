@@ -18,7 +18,7 @@ const solve = (fn, lo, hi, target) => {
 }
 
 // 1. Folded capital M: one cord folded at three points, legs running off the bottom like a cord around a box
-export const folded = ({ L = 116, T = 128, r = 30, V = 376 } = {}) => {
+export const folded = ({ L = 116, T = 128, r = 30, V = 336 } = {}) => {
   const build = (th) => {
     const p = pen(L, S + 40, -90).fd(S + 40 - T - r).arc(r, 90 + th)
     // the diagonal runs until the valley fold brings the cord level exactly at the center line
@@ -31,29 +31,15 @@ export const folded = ({ L = 116, T = 128, r = 30, V = 376 } = {}) => {
 }
 
 // 2. Knotted M: the same fold, but the valley is a small closed loop where the cord crosses itself, as in a mizuhiki knot;
-// the right half is drawn after the left, so it passes over at the crossing
+// the cord is drawn whole, then the right half's run through the crossing is drawn again on top, so it passes over
 export const knotted = ({ L = 132, T = 124, r = 40, rv = 34, V = 392 } = {}) => {
   const build = (th, len) => pen(L, S + 40, -90).fd(S + 40 - T - r).arc(r, 90 + th).fd(len).arc(rv, 180 - th)
   // for a slant, the run length that lands the loop's bottom on the center line
   const lenFor = (th) => solve((len) => build(th, len).pos[0], 10, 600, S / 2)
   const th = solve((t) => build(t, lenFor(t)).pos[1], 45, 85, V)
-  const left = build(th, lenFor(th)).pts
-  return [left, mirror(left)]
+  const left = build(th, lenFor(th)).pts, right = mirror(left)
+  const over = right.slice(0, right.findIndex(([, y]) => y < V - 2 * rv - 170))
+  return [[...left, ...right.slice(1)], over]
 }
 
-// 3. Zigzag M: no upright stems; the cord is wound up and down across the square in four diagonals, like cord wound around a gift
-export const zigzag = ({ r = 40, T = 128, V = 372, X0 = 20 } = {}) => {
-  // lengths are found by search so each fold lands exactly: peaks top out at T, the valley bottoms out at V on the center line
-  const build = (th) => {
-    const peak = (len) => pen(X0, S + 40, -th).fd(len).arc(r, 2 * th)
-    const up = solve((len) => Math.min(...peak(len).pts.map((q) => q[1])), 1, 900, T)
-    const valley = (len) => peak(up).fd(len).arc(r, -th)
-    const down = solve((len) => valley(len).pos[1], 1, 900, V)
-    return valley(down)
-  }
-  const th = solve((t) => build(t).pos[0], 45, 85, S / 2)
-  const left = build(th).pts
-  return [[...left, ...mirror(left)]]
-}
-
-export const marks = { folded, knotted, zigzag }
+export const marks = { folded, knotted }
