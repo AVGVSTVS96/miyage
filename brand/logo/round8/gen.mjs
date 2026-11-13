@@ -3,15 +3,15 @@
 import { writeFileSync, mkdirSync, rmSync } from "node:fs"
 import { execFileSync } from "node:child_process"
 import { marks } from "./marks.mjs"
-import { cord, svg, STROKES } from "./cord.mjs"
+import { svg } from "./cord.mjs"
 
 const out = import.meta.dirname
 const order = Object.keys(marks)
 // 256px and up gets the full cord, 48 to 255 three strands, under 48 one band
-const ranges = { "": STROKES.full, "-mid": STROKES.mid, "-small": STROKES.band }
-for (const k of order) for (const [suf, st] of Object.entries(ranges)) writeFileSync(`${out}/${k}${suf}.svg`, svg(cord(marks[k](), st), k + suf))
+const ranges = { "": "full", "-mid": "mid", "-small": "band" }
+for (const k of order) for (const [suf, size] of Object.entries(ranges)) writeFileSync(`${out}/${k}${suf}.svg`, svg(marks[k](size === "band" && k !== "tied" ? "small" : size), k + suf))
 
-const W = 1200, tile = 520, gap = 40, pad = (W - 2 * tile - gap) / 2
+const W = 1200, tile = 360, gap = 30, pad = (W - 3 * tile - 2 * gap) / 2
 const H = 64 + tile + 26 + 64 + 64
 const png = (file, w) => "data:image/png;base64," + execFileSync("rsvg-convert", ["-w", String(w), `${out}/${file}.svg`]).toString("base64")
 const tiles = order

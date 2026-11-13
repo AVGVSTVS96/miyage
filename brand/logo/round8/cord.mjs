@@ -99,3 +99,30 @@ export const rotate = (pieces, deg, cx = S / 2, cy = S / 2) =>
     return [cx + dx * c - dy * s, cy + dx * s + dy * c]
   }))
 export const move = (pieces, ox, oy) => pieces.map((pts) => pts.map(([x, y]) => [x + ox, y + oy]))
+
+// a smooth curve through key points (centripetal Catmull-Rom), sampled evenly; the curve passes through every point
+export const spline = (keys, step = 1.5) => {
+  const P = [keys[0].map((v, k) => 2 * v - keys[1][k]), ...keys, keys.at(-1).map((v, k) => 2 * v - keys.at(-2)[k])]
+  const dense = []
+  for (let i = 1; i < P.length - 2; i++) {
+    const [p0, p1, p2, p3] = [P[i - 1], P[i], P[i + 1], P[i + 2]]
+    const d = (a, b) => Math.max(1e-6, Math.hypot(a[0] - b[0], a[1] - b[1]) ** 0.5)
+    const t1 = d(p0, p1), t2 = t1 + d(p1, p2), t3 = t2 + d(p2, p3)
+    for (let s = 0; s < 200; s++) {
+      const t = t1 + ((t2 - t1) * s) / 200
+      const L = (a, b, ta, tb) => a.map((v, k) => ((tb - t) / (tb - ta)) * v + ((t - ta) / (tb - ta)) * b[k])
+      const A1 = L(p0, p1, 0, t1), A2 = L(p1, p2, t1, t2), A3 = L(p2, p3, t2, t3)
+      const B1 = L(A1, A2, 0, t2), B2 = L(A2, A3, t1, t3)
+      dense.push(L(B1, B2, t1, t2))
+    }
+  }
+  dense.push(keys.at(-1))
+  const out = [dense[0]]
+  let acc = 0
+  for (let i = 1; i < dense.length; i++) {
+    acc += Math.hypot(dense[i][0] - dense[i - 1][0], dense[i][1] - dense[i - 1][1])
+    if (acc >= step) { out.push(dense[i]); acc = 0 }
+  }
+  out.push(keys.at(-1))
+  return out
+}
