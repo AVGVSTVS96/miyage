@@ -42,11 +42,11 @@ export const bbox = (loop, half) => {
 
 // One skeleton, a cord drawing for each size it's shown at. Finer strands than a pixel blur into grey, so
 // the approved five strands hold from 256px, three strands from 100px, one band below that, and a heavier
-// band at 16px. The bands' floors land on whole pixels at the sizes they're made for.
+// band at 16px, where the loop shrinks to a plain crossing. The floors land on whole pixels at 128px and in the bands.
 export const DRAWINGS = {
   full: { stroke: { n: 5, gap: 8.5, w: 3 }, clear: 7, min: 256 },
-  mid: { stroke: { n: 3, gap: 15, w: 8 }, clear: 8, min: 100 },
+  mid: { stroke: { n: 3, gap: 16, w: 8 }, clear: 8, min: 100, shape: { dy: -4.48 } },
   small: { stroke: { n: 1, gap: 0, w: 32 }, clear: 12, min: 24, shape: { scale: 1, dy: 0 } },
-  tiny: { stroke: { n: 1, gap: 0, w: 48 }, clear: 14, min: 0, shape: { scale: 1.12, rv: 24, V: 312, dy: -9.3 } },
+  tiny: { stroke: { n: 1, gap: 0, w: 48 }, clear: 20, min: 0, shape: { scale: 1.1, rv: 10, V: 296, dy: -6.4 } },
 }
 export const drawingFor = (px) => Object.keys(DRAWINGS).find((k) => px >= DRAWINGS[k].min)

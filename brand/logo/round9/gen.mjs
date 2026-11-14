@@ -51,7 +51,7 @@ for (const m of ["miyage-mark", "miyage-mark-black"]) render(`${out}/svg/${m}.sv
 execFileSync("magick", [16, 32, 48].map((px) => `${out}/png/miyage-icon-${px}.png`).concat(`${out}/png/favicon.ico`))
 
 // the sheet, portrait for a phone: large on black, then real pixel sizes on black, on white, and the black mark on paper
-const W = 1080, m = 40, big = W - 2 * m, ph = 250, pg = 20, row = [180, 128, 64, 32, 16]
+const W = 1080, m = 40, big = W - 2 * m, ph = 264, pg = 20, row = [180, 128, 64, 32, 16]
 const H = m + big + m + 3 * ph + 2 * pg + m
 const tmp = `${out}/.tmp`
 mkdirSync(tmp, { recursive: true })
@@ -68,7 +68,7 @@ const panel = (i, bg, lc, file) => {
   let x = m + 40, s = `<rect x="${m}" y="${y}" width="${big}" height="${ph}" rx="18" fill="${bg}"/>`
   for (const px of row) {
     s += img(file(px), x, y + 24 + 180 - px, px)
-    s += `<text x="${x + px / 2}" y="${y + ph - 18}" text-anchor="middle" font-family="Inter" font-size="17" fill="${lc}">${px}</text>`
+    s += `<text x="${x + px / 2}" y="${y + ph - 18}" text-anchor="middle" font-family="Inter" font-size="24" fill="${lc}">${px}</text>`
     x += px + gaps
   }
   return s
