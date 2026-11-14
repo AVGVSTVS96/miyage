@@ -14,7 +14,7 @@ const sin = (d) => Math.sin((d * Math.PI) / 180), cos = (d) => Math.cos((d * Mat
 
 // Yb floor, T peak tops, r floor corners, a peak bends, rv the tied loop, V the loop's bottom,
 // thO and thI the slopes of the outer and inner sides, sigma how softly each bend eases in
-export const endless = ({ Yb = 396, T = 112, r = 44, a = 50, rv = 42, V = 330, thO = 78, thI = 58, sigma = 9, dx = 0, dy = 0, scale = 1 } = {}) => {
+export const endless = ({ Yb = 400, T = 104, r = 44, a = 44, rv = 32, V = 318, thO = 72, thI = 68, sigma = 9, dx = 0, dy = -2, scale = 0.92 } = {}) => {
   const build = (L0, len) => {
     const p = pen(S / 2, Yb, 180).fd(L0).arc(r, 180 - thO)
     const up = (p.pos[1] - (T + a - a * cos(thO))) / sin(thO)
@@ -40,10 +40,13 @@ export const bbox = (loop, half) => {
   return [Math.min(...xs) - half, Math.min(...ys) - half, Math.max(...xs) + half, Math.max(...ys) + half].map((v) => +v.toFixed(1))
 }
 
-// One skeleton, three cord drawings by the size it's shown at: the approved five strands from 180px up,
-// three strands from 64 to 179px, and one band below 64px, where finer strands blur into grey.
+// One skeleton, a cord drawing for each size it's shown at. Finer strands than a pixel blur into grey, so
+// the approved five strands hold from 256px, three strands from 100px, one band below that, and a heavier
+// band at 16px. The bands' floors land on whole pixels at the sizes they're made for.
 export const DRAWINGS = {
-  full: { stroke: { n: 5, gap: 8.5, w: 3 }, clear: 7 },
-  mid: { stroke: { n: 3, gap: 15, w: 8 }, clear: 8 },
-  small: { stroke: { n: 1, gap: 0, w: 32 }, clear: 11, shape: { scale: 1.1 } },
+  full: { stroke: { n: 5, gap: 8.5, w: 3 }, clear: 7, min: 256 },
+  mid: { stroke: { n: 3, gap: 15, w: 8 }, clear: 8, min: 100 },
+  small: { stroke: { n: 1, gap: 0, w: 32 }, clear: 12, min: 24, shape: { scale: 1, dy: 0 } },
+  tiny: { stroke: { n: 1, gap: 0, w: 48 }, clear: 14, min: 0, shape: { scale: 1.12, rv: 24, V: 312, dy: -9.3 } },
 }
+export const drawingFor = (px) => Object.keys(DRAWINGS).find((k) => px >= DRAWINGS[k].min)
